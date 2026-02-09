@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            padding: 20px;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            flex-shrink: 0;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 400px;
+            height: 400px;
+        }
+
+        .image-grid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .heart {
+            font-size: 120px;
+            margin-bottom: 20px;
+            animation: heartbeat 1.2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #ff1493;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn {
+            background-color: #ff1493;
+            color: white;
+        }
+
+        #yesBtn:hover {
+            background-color: #ff69b4;
+            transform: scale(1.05);
+        }
+
+        #noBtn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #noBtn:hover {
+            background-color: #7f8c8d;
+        }
+
+        #noBtn.active {
+            position: fixed;
+        }
+
+        .meme {
+            display: none;
+            margin-top: 30px;
+            max-width: 250px;
+        }
+
+        .meme img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .meme-text {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #ff1493;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            z-index: 1000;
+            animation: pop 1s forwards;
+        }
+
+        @keyframes pop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image-grid left" style="margin-bottom: 230px;">
+        <img src="image (3).jpg" alt="image 3">
+        <img src="image (4).jpg" alt="image 4">
+        <img src="image (5).jpg" alt="image 5">
+        <img src="image (6).jpg" alt="image 6">
+    </div>
+
+    <div class="container">
+        <div class="heart">💖</div>
+        <h1>Will you be my valentine, Louie Andrea M. Linatoc?</h1>
+        <div class="button-container">
+            <button id="yesBtn">Yes! 🎉</button>
+            <button id="noBtn">No</button>
+        </div>
+        <div class="meme" id="meme">
+            <img src="https://i.imgflip.com/aj4iaf.jpg" alt="begging cat">
+        </div>
+    </div>
+
+    <div class="image-grid right" style="margin-bottom: 160px;">
+        <img src="image (1).jpg" alt="image 1">
+        <img src="image (2).jpg" alt="image 2">
+        <img src="image (1).png" alt="image 7">
+        <img src="image (8).jpg" alt="image 8">
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const meme = document.getElementById('meme');
+        let noBtnPressed = false;
+        let noBtnClickCount = 0;
+
+        const gifs = [
+            'https://i.imgflip.com/ajo3vf.jpg',
+            'https://i.imgflip.com/ajo3lc.jpg',
+            'https://i.imgflip.com/aj4iaf.jpg'
+        ];
+
+        const messages = [
+            'Pleasee!!!',
+            'pleasee babyyy i nead thiss!!',
+            'bebyyy sige naa love ko ikaww!!'
+        ];
+
+        function moveNoButton() {
+            const randomX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const randomY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        noBtn.addEventListener('click', () => {
+            if (!noBtnPressed) {
+                noBtnPressed = true;
+                noBtn.classList.add('active');
+                moveNoButton();
+            } else {
+                moveNoButton();
+            }
+
+            // Cycle through gifs and messages
+            const gifIndex = noBtnClickCount % gifs.length;
+            meme.innerHTML = `<img src="${gifs[gifIndex]}" alt="gif ${gifIndex + 1}"><div class="meme-text">${messages[gifIndex]}</div>`;
+            meme.style.display = 'block';
+            noBtnClickCount++;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            triggerCelebration();
+        });
+
+        function triggerCelebration() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const celebration = document.createElement('div');
+                    celebration.className = 'celebration';
+                    celebration.textContent = '🎊';
+                    document.body.appendChild(celebration);
+                    setTimeout(() => celebration.remove(), 1000);
+                }, i * 200);
+            }
+
+            alert('Happy Valentine\'s Day! 💕');
+        }
+    </script>
+</body>
+</html>
